@@ -1,0 +1,6 @@
+api_version: "1"
+spec_version: "1.0.0-draft.9"
+source_repo: CompositeCode/substratalapps.com
+source_path: docs/openapi.yaml
+source_commit: b826f2a1aaa6d58d9c16c83f4aafeb8378a29d8a
+synced_at: "2026-10-23T07:07:34Z"
