@@ -7,16 +7,18 @@ import com.substratalapps.hub.BuildConfig
 import com.substratalapps.hub.model.ScreenSpec
 
 /**
- * Links into the Substratal documentation site. URLs are versioned like the site:
- * `{base}{docsVersion}/{path}`, where a release build's docs version is its minor version and
- * debug builds use `dev`. Every platform's app uses the same paths, so a screen id is a stable
- * help address on all of them (`/reference/screens/usr-01/`).
+ * Links into the Substratal Hub help center, the documentation every Hub app shares
+ * (substratalapps-applications-specs, `help/`). A screen's page is `screens/<id>.html` on every
+ * platform; see the help center's "Linking to help from an app".
  */
 object HelpLinks {
-    private val root get() = "${BuildConfig.HELP_BASE_URL}${BuildConfig.DOCS_VERSION}/"
+    private val root get() = BuildConfig.HELP_BASE_URL
 
     fun home() = root
-    fun forScreen(screen: ScreenSpec) = root + screen.docsPath
+
+    /** The screen's help page; screens this app adds outside the design package open the help home. */
+    fun forScreen(screen: ScreenSpec) = screen.helpPath?.let { root + it } ?: home()
+
     fun page(path: String) = root + path.trimStart('/')
 
     fun open(context: Context, url: String) {
@@ -28,13 +30,13 @@ object HelpLinks {
 data class HelpTopic(val title: String, val summary: String, val path: String)
 
 val helpTopics = listOf(
-    HelpTopic("Getting started", "Install the app, sign in and find your way around.", "getting-started/"),
-    HelpTopic("Tutorials", "Step-by-step: invite a user, turn access off, register an app, create a key.", "tutorials/"),
-    HelpTopic("Managing users", "Search, invite, suspend and sign people out.", "guides/users/"),
-    HelpTopic("Access and roles", "Turn apps on and off for people, and decide what they can do.", "guides/access-and-roles/"),
-    HelpTopic("Applications and keys", "Register applications, manage API keys, webhooks and push.", "guides/applications/"),
-    HelpTopic("Operations", "Monitor the API: health, errors, usage, alerts and cost.", "guides/operations/"),
-    HelpTopic("Screen reference", "Every screen, what it does and the API calls behind it.", "reference/screens/"),
-    HelpTopic("API reference", "OpenAPI / Swagger reference for the Platform API, by version.", "developers/api/"),
-    HelpTopic("FAQ", "Answers to common questions.", "faq/"),
+    HelpTopic("Getting started", "What the Hub is, how it's organized, and where things are.", "guides/getting-started.html"),
+    HelpTopic("The Android app", "Layouts, links, offline use and security on Android.", "guides/android-app.html"),
+    HelpTopic("Your first hour as an administrator", "A guided tour of the tasks staff do first.", "tutorials/first-hour-as-an-administrator.html"),
+    HelpTopic("Users and access", "Find people, invite them, and turn app access on and off.", "guides/users-and-access.html"),
+    HelpTopic("Roles and permissions", "What each role can do, and how to change it.", "guides/roles-and-permissions.html"),
+    HelpTopic("Applications", "Register and manage applications, keys and webhooks.", "guides/applications.html"),
+    HelpTopic("Every screen", "Each screen, who can use it, and the API calls behind it.", "screens/index.html"),
+    HelpTopic("API reference", "Interactive OpenAPI reference for the Platform API, by version.", "api/index.html"),
+    HelpTopic("FAQ", "Answers to common questions.", "faq.html"),
 )

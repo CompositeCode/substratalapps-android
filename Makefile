@@ -1,9 +1,7 @@
 # Common tasks. The Android build itself is plain Gradle (./gradlew …).
-PY      ?= site/.venv/bin/python
-MKDOCS  ?= site/.venv/bin/mkdocs
 GRADLE  ?= ./gradlew
 
-.PHONY: build test check install install-local docs-deps catalog docs docs-serve api-coverage
+.PHONY: build test check install install-local help-status api-coverage
 
 build:                ## Debug APK
 	$(GRADLE) assembleDebug
@@ -17,21 +15,10 @@ install:              ## Install on a connected device (production API)
 install-local:        ## Install, pointed at the API devserver on the emulator's host
 	$(GRADLE) installDebug -Psubstratal.apiEnvironment=LOCAL
 
-docs-deps:            ## Create the docs virtualenv
-	python3 -m venv site/.venv && site/.venv/bin/pip install -q -r site/requirements.txt
+help-status:          ## Write build/help/screens.json and build/help/android.json (help center status)
+	$(GRADLE) -q :core:model:exportHelp
 
-catalog:              ## Export the app's screen catalog for the docs
-	$(GRADLE) -q :core:model:exportScreenCatalog
+api-coverage: help-status ## Every API call a screen makes must exist in the pinned spec (needs PyYAML)
+	python3 scripts/check_api_coverage.py build/help/screens.json openapi/v1/openapi.yaml
 
-api-coverage: catalog ## Every API call a screen makes must exist in the pinned spec
-	$(PY) scripts/check_api_coverage.py site/.generated/screens.json openapi/v1/openapi.yaml
-
-docs: api-coverage    ## Generate and build the docs site (strict)
-	$(PY) site/scripts/generate.py
-	cd site && .venv/bin/mkdocs build --strict
-
-docs-serve: api-coverage ## Generate and serve the docs at http://127.0.0.1:8000
-	$(PY) site/scripts/generate.py
-	cd site && .venv/bin/mkdocs serve
-
-check: test docs      ## Everything CI runs
+check: test api-coverage ## Everything CI runs, apart from lint

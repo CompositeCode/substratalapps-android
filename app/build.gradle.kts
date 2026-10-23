@@ -5,12 +5,10 @@ plugins {
     alias(libs.plugins.hilt)
 }
 
-// The docs site publishes one version per app minor version (mike), so in-app help links to the
-// documentation that matches this build. Debug builds link to the "dev" docs.
-val appVersionName = "0.1.0"
-val docsVersion = appVersionName.split(".").take(2).joinToString(".")
+val appVersionName = providers.gradleProperty("substratal.appVersion").get()
+// In-app help opens the Substratal Hub help center that every Hub app shares.
 val helpBaseUrl = providers.gradleProperty("substratal.helpBaseUrl")
-    .orElse("https://compositecode.github.io/substratalapps-android/").get()
+    .orElse("https://compositecode.github.io/substratalapps-applications-specs/help/").get()
 val apiEnvironment = providers.gradleProperty("substratal.apiEnvironment").orElse("PRODUCTION").get()
 
 android {
@@ -29,14 +27,10 @@ android {
     }
 
     buildTypes {
-        debug {
-            buildConfigField("String", "DOCS_VERSION", "\"dev\"")
-        }
         release {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            buildConfigField("String", "DOCS_VERSION", "\"$docsVersion\"")
         }
     }
 

@@ -1,6 +1,6 @@
-# Build, test, and check that the docs still build, on every push and pull request.
-# Code and docs ship together: a change that breaks the docs (a shipped screen without help, an
-# API call missing from the pinned spec, a broken link) fails here.
+# Build, test, lint, and check every API call the app's screens make against the pinned spec,
+# on every push and pull request. Help pages live in the shared Hub help center
+# (substratalapps-applications-specs); help-status.yml keeps this app's status there current.
 name: Android
 
 on:
@@ -43,11 +43,6 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
-          cache: pip
-          cache-dependency-path: site/requirements.txt
 
-      - name: Docs toolchain
-        run: python -m venv site/.venv && site/.venv/bin/pip install -r site/requirements.txt
-
-      - name: API coverage, docs generation, strict docs build
-        run: make docs
+      - name: Every API call in the screen catalog exists in the pinned spec
+        run: pip install pyyaml && make api-coverage
