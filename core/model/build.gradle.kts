@@ -11,15 +11,16 @@ dependencies {
     testImplementation(libs.junit)
 }
 
-// `./gradlew :core:model:exportScreenCatalog` writes the screen catalog as JSON for the docs site.
+// `./gradlew :core:model:exportHelp` writes build/help/screens.json (for the API coverage check) and
+// build/help/android.json (this app's build status for the Substratal Hub help center).
 application { mainClass.set("com.substratalapps.hub.model.ExportScreenCatalogKt") }
 
-tasks.register<JavaExec>("exportScreenCatalog") {
+tasks.register<JavaExec>("exportHelp") {
     group = "documentation"
-    description = "Writes the screen catalog to site/.generated/screens.json"
+    description = "Writes the screen catalog and the help center's build-status file to build/help/"
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("com.substratalapps.hub.model.ExportScreenCatalogKt")
-    val out = rootProject.layout.projectDirectory.file("site/.generated/screens.json").asFile
-    args(out.absolutePath)
-    outputs.file(out)
+    val out = rootProject.layout.buildDirectory.dir("help").get().asFile
+    args(out.absolutePath, providers.gradleProperty("substratal.appVersion").get())
+    outputs.dir(out)
 }

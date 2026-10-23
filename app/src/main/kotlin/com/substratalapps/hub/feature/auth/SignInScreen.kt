@@ -97,7 +97,7 @@ fun SignInScreen(viewModel: AuthViewModel = hiltViewModel()) {
         Button(onClick = { viewModel.signIn(email, password) }, enabled = canSubmit, modifier = Modifier.fillMaxWidth()) {
             if (ui.busy) CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp) else Text("Sign in")
         }
-        TextButton(onClick = { HelpLinks.open(context, HelpLinks.page("getting-started/sign-in/")) }) {
+        TextButton(onClick = { HelpLinks.open(context, HelpLinks.page("guides/sign-in-and-security.html")) }) {
             Text("Forgot password or need help signing in?")
         }
     }

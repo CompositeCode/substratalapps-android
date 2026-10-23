@@ -1,7 +1,0 @@
-# Documentation site toolchain. Pinned so local builds match CI.
-# Stay on MkDocs 1.x: 2.0 removes the plugin system this site uses (Material team, 2026-02-18).
-mkdocs==1.6.1
-mkdocs-material==9.7.7
-mike==2.2.0
-mkdocs-swagger-ui-tag==0.8.1
-PyYAML==6.0.3

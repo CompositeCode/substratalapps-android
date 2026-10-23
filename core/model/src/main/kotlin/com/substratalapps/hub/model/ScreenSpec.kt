@@ -66,8 +66,11 @@ data class ScreenSpec(
     val pathParameters: List<String>
         get() = Regex(":(\\w+)").findAll(route).map { it.groupValues[1] }.toList()
 
-    /** Path of this screen's page on the documentation site, relative to the platform root. */
-    val docsPath: String get() = "reference/screens/${id.lowercase()}/"
+    /**
+     * This screen's page in the Substratal Hub help center, relative to its `help/` root. Only
+     * design-package screens have one; [Phase.PROPOSED] screens return null.
+     */
+    val helpPath: String? get() = if (phase == Phase.PROPOSED) null else "screens/${id.lowercase()}.html"
 }
 
 /** How the Platform API is versioned. The URL carries no version; a header does. */

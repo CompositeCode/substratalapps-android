@@ -19,7 +19,7 @@ What was checked before building the Android app, and what's still outstanding.
 | Android SDK | Platforms 35, 36 (installed), 37.0 (installed: current AndroidX needs compileSdk 37); build-tools 36; platform-tools | OK |
 | Gradle | Wrapper 9.8.2; AGP 9.4.1 with built-in Kotlin 2.4.21 | Builds; 11 unit tests pass |
 | Emulator | AVD `il_pixel` (API 35) | Ran the app on phone and tablet sizes, light and dark |
-| Docs toolchain | Python 3.10; MkDocs 1.6.1, Material 9.7.7, mike 2.2.0, swagger-ui-tag 0.8.1 (pinned) | `mkdocs build --strict` passes |
+| Docs | Moved to the Hub help center in substratalapps-applications-specs (Node build, `HELP_STRICT=1`) | Builds with 0 problems, including Android's status file |
 | Docker / Go / jq | Docker 20.10, Go 1.24 (auto-fetches the 1.26 toolchain), jq 1.8 | OK for the local API |
 
 ## Already resolved in the API since the first plan
@@ -40,13 +40,13 @@ These were tracked as `[api-gaps]` issues in `CompositeCode/substratalapps.com` 
 
 | # | Item | Blocks | Owner |
 |---|---|---|---|
-| 1 | **No GitHub remote for this repo.** CI, docs publishing and spec sync are written but can't run until the repo exists (`gh repo create CompositeCode/substratalapps-android`). GitHub Pages on a private repo needs a paid plan; otherwise make the repo public, or publish the built site to S3 + CloudFront | Docs site, CI | You |
+| 1 | GitHub Actions can't start jobs on the CompositeCode account (billing / spending limit). The repo exists and is pushed. Help-status publishing also needs a `SPECS_DOCS_TOKEN` secret. The docs moved to the shared help center in substratalapps-applications-specs | CI, help status | You |
 | 2 | `dashboard.substratalapps.com` doesn't resolve. Verified App Links need `/.well-known/assetlinks.json` there; until then `https://dashboard…` links open in the browser. `substratal://` links work | Emailed links opening the app | Web app (`substratalapps.com-web`) |
 | 3 | A Play signing key and its SHA-256 fingerprint, for `assetlinks.json` and Play internal testing | App Links, distribution | You |
 | 4 | Firebase project for `app_hub` + FCM credential uploaded through the API (APL-07) | Push (milestone M3) | You / API issue #24 |
 | 5 | Register `app_hub` and Substratal's own applications | Push, Home | API issue #25 |
 | 6 | SES out of the sandbox | Invitations and resets reaching real people | API issue #22 |
 | 7 | Stripe set up | Plan & Billing screens | API issue #23 |
-| 8 | Operations endpoints and permissions | OPS-01..10 live data | API issues #43–#48 |
-| 9 | Design package still shows `/v1` paths and lacks the new operations | Spec consistency | API issue #40 (G3) |
+| 8 | Operations endpoints and permissions | Live operations data (if Android keeps it; see 9) | API issues #43–#48 |
+| 9 | **Operations on Android conflicts with the spec.** The specs (v1.8.0, PRODUCT-SPEC §2a, OPEN-QUESTIONS #27) now define web-only Console screens `OPS-01..07`, `SEC-01`, `CFG-01/02`, `RPT-01`, `INT-01`, which native apps skip. This app's own `OPS-01..10` preview reuses those IDs for different screens. Decide: drop the Android Operations section (matches the spec), or propose native adoption in the specs | Ops section, help links | You |
 | 10 | The production superadmin's credentials, to test against production | End-to-end checks in production | You |

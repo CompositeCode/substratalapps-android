@@ -2,7 +2,7 @@
 
 The Android management app for the [Substratal Apps Platform API](https://compositecode.github.io/substratalapps.com/). It's the Android build of the Substratal Hub defined in [substratalapps-applications-specs](https://github.com/CompositeCode/substratalapps-applications-specs), built admin-first, plus a new Operations section for monitoring the API.
 
-It also hosts **Substratal Help** (`site/`), the documentation site the management apps on every platform link to.
+Help pages live in the **Substratal Hub help center**, shared by every Hub app: <https://compositecode.github.io/substratalapps-applications-specs/help/> (source: `help/` in [substratalapps-applications-specs](https://github.com/CompositeCode/substratalapps-applications-specs)). Every screen's **?** button opens its page there.
 
 ## API versioning: no `/v1` in the URL
 
@@ -31,7 +31,6 @@ core/network/        OkHttp/Retrofit client: version header, auth, single-flight
 core/designsystem/   Substratal themes (5 light, 5 dark), brand assets, status badges, components
 core/data/           Session + Keystore-encrypted token store, capabilities, preferences
 openapi/v1/          Pinned openapi.yaml + where it came from; CHANGELOG.md lists every sync
-site/                Substratal Help (MkDocs Material + mike + Swagger UI)
 scripts/             API coverage check, spec sync
 docs/                Planning documents
 ```
@@ -55,15 +54,12 @@ make up && make migrate && make seed && make run && make quickstart
 
 Then sign in as `admin@example.com` with the password `local admin passphrase`.
 
-## Docs
+## Help and documentation
 
-```bash
-make docs-deps     # once: Python venv with the pinned toolchain
-make docs-serve    # http://127.0.0.1:8000
-make docs          # strict build, as CI runs it
-```
-
-What's generated, what CI enforces, and how publishing and API-spec syncing work are covered in [site/docs/developers/docs-workflow.md](site/docs/developers/docs-workflow.md).
+- **Help links.** `HelpLinks` opens `screens/<id>.html` in the help center for design-package screens. Screens this app adds on its own (the `OPS-*` preview) open the help home, because the spec's `OPS-*` IDs are different web-only Console screens.
+- **Build status.** `make help-status` writes `build/help/android.json`, listing the screens this app has built. On every merge to `main`, `.github/workflows/help-status.yml` opens or updates a PR putting it at `help/apps/android.json` in the specs repo, then asks the help center to rebuild. Each screen's help page then shows "Android: Available in 0.1.0". It needs a `SPECS_DOCS_TOKEN` secret.
+- **API contract.** `openapi/v1/` pins the spec this build is checked against. `make api-coverage` fails if a screen calls an operation that isn't in it, and `api-spec-sync.yml` opens a PR here when the API's spec changes.
+- **Adding a screen.** Register it in `implementedScreens` and `ImplementationStatus`; unit tests fail if they disagree. Write its usage notes in the help center's `help/screens/<id>.md`.
 
 ## Status
 

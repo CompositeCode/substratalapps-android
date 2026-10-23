@@ -4,7 +4,7 @@
 Usage: sync_openapi.py <new-openapi.yaml> <api-commit-sha>
 Writes openapi/v1/openapi.yaml and SOURCE.yaml, and adds a row to openapi/CHANGELOG.md.
 If the new document serves a different API version, it stops: a new API version is a deliberate
-change (openapi/v2/, ApiVersioning.CURRENT, the docs nav), not an automatic one.
+change (openapi/v2/, ApiVersioning.CURRENT), not an automatic one.
 """
 import datetime
 import pathlib
@@ -77,7 +77,7 @@ def main():
     if removed:
         print("Removed operations fail the API coverage check if a screen still calls them. Update "
               "`ScreenCatalog` before merging.\n")
-    print("After merging, the docs workflow republishes the API reference.")
+    print("The Hub help center publishes its API reference from the API's own openapi.yaml, so nothing else needs updating.")
 
 
 if __name__ == "__main__":
